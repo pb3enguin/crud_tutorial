@@ -58,6 +58,12 @@ class _ViewScreenState extends State<ViewScreen> {
   late final PlutoGridStateManager stateManager;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Center(
       child: Expanded(

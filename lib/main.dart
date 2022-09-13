@@ -6,12 +6,11 @@ import 'package:crud_tutorial/db/firestore_function.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
+import 'function/info_data.dart';
 import 'screen/drawer_screen.dart';
 import 'screen/screen_selector.dart';
 
 Future<void> main() async {
-  print(DefaultFirebaseOptions.currentPlatform);
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -29,6 +28,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ScreenSelector()),
+        ChangeNotifierProvider(create: (_) => PersonInfoReg()),
       ],
       child: MaterialApp(
         theme: ThemeData(

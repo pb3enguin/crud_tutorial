@@ -1,6 +1,11 @@
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:crud_tutorial/function/info_data.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../function/person_info_firestore.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -14,28 +19,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController telNoController = TextEditingController();
   final TextEditingController birthdayController = TextEditingController();
 
-  String _name = '';
-  String _telNo = '';
-  String _birthday = '';
-
   String _regName = '';
   String _regTelNo = '';
   String _regBirthday = '';
 
-  void changeName(String input) {
-    _name = input;
-    log(_name);
-  }
-
-  void changeTelNo(String input) {
-    _telNo = input;
-    log(_telNo);
-  }
-
-  void changeBirth(String input) {
-    _birthday = input;
-    log(_birthday);
-  }
+  FireStorePersonInfoFunction fireFunction = FireStorePersonInfoFunction();
 
   void registerAction(String name, String telNo, String birthday) {
     setState(() {
@@ -46,10 +34,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void clearField() {
-    _name = '';
-    _telNo = '';
-    _birthday = '';
-
     nameController.clear();
     telNoController.clear();
     birthdayController.clear();
@@ -69,19 +53,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   editingController: nameController,
                   title: "이름",
                   hintText: "이름을 입력하세요",
-                  onChanged: changeName,
+                  onChanged: context.read<PersonInfoReg>().changeName,
                 ),
                 InputFieldWidget(
                   editingController: telNoController,
                   title: "전화번호",
                   hintText: "010-XXXX-XXXX",
-                  onChanged: changeTelNo,
+                  onChanged: context.read<PersonInfoReg>().changeTelNo,
                 ),
                 InputFieldWidget(
                   editingController: birthdayController,
                   title: "생일",
                   hintText: "생일을 입력하세요",
-                  onChanged: changeBirth,
+                  onChanged: context.read<PersonInfoReg>().changeBirth,
                 ),
               ],
             ),
@@ -91,7 +75,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 padding: const EdgeInsets.all(20.0),
                 child: TextButton(
                   onPressed: () {
-                    registerAction(_name, _telNo, _birthday);
+                    registerAction(
+                      context.read<PersonInfoReg>().getName(),
+                      context.read<PersonInfoReg>().getTelNo(),
+                      context.read<PersonInfoReg>().getBirth(),
+                    );
+                    fireFunction
+                        .uploadPersonInfoData(context.read<PersonInfoReg>());
+                    log(jsonEncode(context.read<PersonInfoReg>()));
+                    context.read<PersonInfoReg>().clear();
                     clearField();
                   },
                   style: TextButton.styleFrom(
@@ -113,27 +105,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               // Register Info Column
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
-                SizedBox(
-                  width: 200,
-                  child: Text(
-                    "이름",
-                    style: TextStyle(fontSize: 30),
-                  ),
-                ),
-                SizedBox(
-                  width: 200,
-                  child: Text(
-                    "전화번호",
-                    style: TextStyle(fontSize: 30),
-                  ),
-                ),
-                SizedBox(
-                  width: 200,
-                  child: Text(
-                    "생년월일",
-                    style: TextStyle(fontSize: 30),
-                  ),
-                ),
+                RegResultBox(name: "이름"),
+                RegResultBox(name: "전화번호"),
+                RegResultBox(name: "생년월일"),
               ],
             ),
             const SizedBox(height: 20),
@@ -141,32 +115,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
               // Registered Info
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: 200,
-                  child: Text(
-                    _regName,
-                    style: const TextStyle(fontSize: 30),
-                  ),
-                ),
-                SizedBox(
-                  width: 200,
-                  child: Text(
-                    _regTelNo,
-                    style: const TextStyle(fontSize: 30),
-                  ),
-                ),
-                SizedBox(
-                  width: 200,
-                  child: Text(
-                    _regBirthday,
-                    style: const TextStyle(fontSize: 30),
-                  ),
-                ),
+                RegResultBox(name: _regName),
+                RegResultBox(name: _regTelNo),
+                RegResultBox(name: _regBirthday),
               ],
             ),
           ],
         )
       ],
+    );
+  }
+}
+
+class RegResultBox extends StatelessWidget {
+  const RegResultBox({
+    Key? key,
+    required String name,
+  })  : _name = name,
+        super(key: key);
+
+  final String _name;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 200,
+      child: Text(
+        _name,
+        style: const TextStyle(fontSize: 30),
+      ),
     );
   }
 }
