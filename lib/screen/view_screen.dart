@@ -2,6 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
+import 'package:provider/provider.dart';
+
+import '../function/person_info_firestore.dart';
 
 class ViewScreen extends StatefulWidget {
   const ViewScreen({Key? key}) : super(key: key);
@@ -66,23 +69,33 @@ class _ViewScreenState extends State<ViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Expanded(
-        child: PlutoGrid(
-          columns: columns,
-          rows: rows,
-          // columnGroups: columnGroups,
-          onLoaded: (PlutoGridOnLoadedEvent event) {
-            stateManager = event.stateManager;
-          },
-          onChanged: (PlutoGridOnChangedEvent event) {
-            log(event.value);
-          },
-          configuration: const PlutoGridConfiguration(
-            style: PlutoGridStyleConfig(
-              borderColor: Colors.black,
+      child: Column(
+        children: [
+          IconButton(
+            onPressed: () {
+              context.read<FireStorePersonInfo>().getCollection();
+            },
+            icon: const Icon(Icons.refresh),
+          ),
+          Expanded(
+            child: PlutoGrid(
+              columns: columns,
+              rows: rows,
+              // columnGroups: columnGroups,
+              onLoaded: (PlutoGridOnLoadedEvent event) {
+                stateManager = event.stateManager;
+              },
+              onChanged: (PlutoGridOnChangedEvent event) {
+                log(event.value);
+              },
+              configuration: const PlutoGridConfiguration(
+                style: PlutoGridStyleConfig(
+                  borderColor: Colors.black,
+                ),
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

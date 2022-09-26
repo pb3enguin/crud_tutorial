@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 import 'function/info_data.dart';
+import 'function/person_info_firestore.dart';
 import 'screen/drawer_screen.dart';
 import 'screen/screen_selector.dart';
 
@@ -27,8 +28,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ScreenSelector()),
-        ChangeNotifierProvider(create: (_) => PersonInfoReg()),
+        ChangeNotifierProvider(
+            create: (_) => ScreenSelector()), // screen select state
+        ChangeNotifierProvider(
+            create: (_) => PersonInfoReg()), // person info (register) state
+        ChangeNotifierProvider(
+            create: (_) => FireStorePersonInfo()), // firestore function
       ],
       child: MaterialApp(
         theme: ThemeData(

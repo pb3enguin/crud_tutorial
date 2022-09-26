@@ -5,6 +5,8 @@ class PersonInfo with ChangeNotifier {
   String _telNo = '';
   String _birthday = '';
 
+  PersonInfo();
+
   void changeName(String input) {
     _name = input;
     notifyListeners();
@@ -28,6 +30,21 @@ class PersonInfo with ChangeNotifier {
     _name = '';
     _telNo = '';
     _birthday = '';
+  }
+
+  bool checkName() => _name.isNotEmpty ? true : false; // 1 char name allowed
+  bool checkTelNo() => _telNo.length >= 8 ? true : false; // allow XXXX-XXXX
+  bool checkBirth() =>
+      _birthday.length >= 8 ? true : false; // YYYY-M-D -> min. length = 8
+
+  bool isValid() {
+    return checkName() && checkTelNo() && checkBirth();
+  }
+
+  void fromJson(Map<String, dynamic> json) {
+    _name = json['name'];
+    _telNo = json['telNo'];
+    _birthday = json['birthday'];
   }
 
   Map<String, dynamic> toJson() => {
