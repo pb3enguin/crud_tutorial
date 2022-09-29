@@ -1,9 +1,11 @@
 import 'dart:developer';
 
+import 'package:firedart/firedart.dart';
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:provider/provider.dart';
 
+import '../function/info_data.dart';
 import '../function/person_info_firestore.dart';
 
 class ViewScreen extends StatefulWidget {
@@ -28,33 +30,13 @@ class _ViewScreenState extends State<ViewScreen> {
     PlutoColumn(
       title: '생년월일',
       field: 'birthday',
-      type: PlutoColumnType.text(),
+      type: PlutoColumnType.date(),
     ),
   ];
 
-  final List<PlutoRow> rows = [
-    PlutoRow(
-      cells: {
-        'name': PlutoCell(value: 'user1'),
-        'telNo': PlutoCell(value: 'Mike'),
-        'birthday': PlutoCell(value: 20),
-      },
-    ),
-    PlutoRow(
-      cells: {
-        'name': PlutoCell(value: 'user2'),
-        'telNo': PlutoCell(value: 'Jack'),
-        'birthday': PlutoCell(value: 25),
-      },
-    ),
-    PlutoRow(
-      cells: {
-        'name': PlutoCell(value: 'user3'),
-        'telNo': PlutoCell(value: 'Suzi'),
-        'birthday': PlutoCell(value: 40),
-      },
-    ),
-  ];
+  final List<PlutoRow> rows = [];
+
+  var snapshots;
 
   /// [PlutoGridStateManager] has many methods and properties to dynamically manipulate the grid.
   /// You can manipulate the grid dynamically at runtime by passing this through the [onLoaded] callback.
@@ -64,6 +46,16 @@ class _ViewScreenState extends State<ViewScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    context.read<FireStorePersonInfo>().getCollection().then((collection) {
+      for (Document doc in collection) {
+        // Document type
+        print(PersonInfo.fromJson(doc.map));
+
+        stateManager.refRows.add(PersonInfo.fromJson(doc.map).getPlutoRow());
+      }
+    });
+    // TODO: error, exception handling
   }
 
   @override
@@ -72,8 +64,8 @@ class _ViewScreenState extends State<ViewScreen> {
       child: Column(
         children: [
           IconButton(
-            onPressed: () {
-              context.read<FireStorePersonInfo>().getCollection();
+            onPressed: () async {
+              await context.read<FireStorePersonInfo>().getCollection();
             },
             icon: const Icon(Icons.refresh),
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pluto_grid/pluto_grid.dart';
 
 class PersonInfo with ChangeNotifier {
   String _name = '';
@@ -41,7 +42,7 @@ class PersonInfo with ChangeNotifier {
     return checkName() && checkTelNo() && checkBirth();
   }
 
-  void fromJson(Map<String, dynamic> json) {
+  PersonInfo.fromJson(Map<String, dynamic> json) {
     _name = json['name'];
     _telNo = json['telNo'];
     _birthday = json['birthday'];
@@ -52,6 +53,15 @@ class PersonInfo with ChangeNotifier {
         'telNo': _telNo,
         'birthday': _birthday,
       };
+
+  // TODO: move to appropriate code
+  PlutoRow getPlutoRow() {
+    return PlutoRow(cells: {
+      'name': PlutoCell(value: _name),
+      'telNo': PlutoCell(value: _telNo),
+      'birthday': PlutoCell(value: _birthday),
+    });
+  }
 }
 
 // explicitly for register page (state management)

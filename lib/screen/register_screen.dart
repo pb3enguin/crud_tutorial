@@ -57,7 +57,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     type: 'text',
                     editingController: nameController,
                     title: "이름",
-                    hintText: "이름을 입력하세요",
+                    hintText: "이름 입력",
                     onChanged: info.changeName,
                   ),
                   InputFieldWidget(
@@ -71,7 +71,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     type: 'date',
                     editingController: birthdayController,
                     title: "생일",
-                    hintText: "생일을 입력하세요",
+                    hintText: "생일 입력",
                     onChanged: info.changeBirth,
                   ),
                 ],
@@ -106,6 +106,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ],
           ),
+          const SizedBox(height: 20.0),
           Column(
             // Register Info Diplay
             children: [

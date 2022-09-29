@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+const double kInputFieldLabelWidth = 100.0;
+const double kInputFieldWidth = 250.0;
+
 class InputFieldWidget extends StatelessWidget {
   InputFieldWidget({
     Key? key,
@@ -25,7 +28,7 @@ class InputFieldWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         SizedBox(
-          width: 80,
+          width: kInputFieldLabelWidth,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Text(
@@ -35,7 +38,7 @@ class InputFieldWidget extends StatelessWidget {
           ),
         ),
         SizedBox(
-          width: 150,
+          width: kInputFieldWidth,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: InputWidget(
@@ -177,18 +180,18 @@ class _DateInputWidgetState extends State<DateInputWidget> {
     return Row(
       children: <Widget>[
         Expanded(
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                child: Text(
-                  _dateString == '' ? 'Select Date' : _dateString,
-                  style: const TextStyle(fontSize: 15.0),
-                ),
+          child: TextField(
+            controller: widget.editingController,
+            onChanged: widget.onChanged,
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+            ],
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8.0)),
               ),
+              hintText: widget.hintText,
             ),
           ),
         ),
@@ -205,6 +208,7 @@ class _DateInputWidgetState extends State<DateInputWidget> {
                 _dateTime = newDate;
                 _dateString =
                     '${_dateTime.year}-${_dateTime.month}-${_dateTime.day}';
+                widget.editingController.text = _dateString;
                 widget.onChanged!(_dateString);
               });
             }
