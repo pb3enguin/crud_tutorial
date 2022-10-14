@@ -36,7 +36,7 @@ class PersonInfo with ChangeNotifier {
   bool checkName() => _name.isNotEmpty ? true : false; // 1 char name allowed
   bool checkTelNo() => _telNo.length >= 8 ? true : false; // allow XXXX-XXXX
   bool checkBirth() =>
-      _birthday.length >= 8 ? true : false; // YYYY-M-D -> min. length = 8
+      _birthday.length >= 8 ? true : false; // YYYY-MM-DD -> min. length = 8
 
   bool isValid() {
     return checkName() && checkTelNo() && checkBirth();

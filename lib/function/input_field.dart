@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 const double kInputFieldLabelWidth = 100.0;
 const double kInputFieldWidth = 250.0;
@@ -206,8 +207,7 @@ class _DateInputWidgetState extends State<DateInputWidget> {
             if (newDate != null) {
               setState(() {
                 _dateTime = newDate;
-                _dateString =
-                    '${_dateTime.year}-${_dateTime.month}-${_dateTime.day}';
+                _dateString = DateFormat('yyyy-MM-dd').format(_dateTime);
                 widget.editingController.text = _dateString;
                 widget.onChanged!(_dateString);
               });

@@ -14,11 +14,11 @@ class FireStorePersonInfo with ChangeNotifier {
   }
 
   void upload(dynamic object) async {
-    Future<Document> result = await fireDB.add(object.toJson());
-    result.catchError((error) {
-      // error가 해당 에러를 출력
-      log('error: $error');
-    });
+    Document result = await fireDB.add(object.toJson());
+    // result.catchError((error) {
+    //   // error가 해당 에러를 출력
+    //   log('error: $error');
+    // });
   }
 
   Future<dynamic> getCollection() async {

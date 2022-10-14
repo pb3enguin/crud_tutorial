@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:firedart/firedart.dart';
@@ -47,15 +48,45 @@ class _ViewScreenState extends State<ViewScreen> {
     // TODO: implement initState
     super.initState();
 
+    // TODO: error, exception handling
+    fetchRows().then((fetchedRows) {
+      /// When there are many rows and the UI freezes when the grid is loaded
+      /// Initialize the rows asynchronously through the initializeRowsAsync method
+      /// Add rows to stateManager.refRows.
+      /// And disable the loading screen.
+      PlutoGridStateManager.initializeRowsAsync(
+        columns,
+        fetchedRows,
+      ).then((value) {
+        stateManager.refRows.addAll(FilteredList(initialList: value));
+
+        /// In this example,
+        /// the loading screen is activated in the onLoaded callback when the grid is created.
+        /// If the loading screen is not activated
+        /// You must update the grid state by calling the stateManager.notifyListeners() method.
+        /// Because calling setShowLoading updates the grid state
+        /// No need to call stateManager.notifyListeners.
+        stateManager.setShowLoading(false);
+      });
+    });
+  }
+
+  Future<List<PlutoRow>> fetchRows() {
+    final Completer<List<PlutoRow>> completer = Completer();
+    final List<PlutoRow> _rows = [];
+
     context.read<FireStorePersonInfo>().getCollection().then((collection) {
       for (Document doc in collection) {
         // Document type
         print(PersonInfo.fromJson(doc.map));
 
-        stateManager.refRows.add(PersonInfo.fromJson(doc.map).getPlutoRow());
+        _rows.add(PersonInfo.fromJson(doc.map).getPlutoRow());
       }
+
+      completer.complete(_rows);
     });
-    // TODO: error, exception handling
+
+    return completer.future;
   }
 
   @override
@@ -63,12 +94,6 @@ class _ViewScreenState extends State<ViewScreen> {
     return Center(
       child: Column(
         children: [
-          IconButton(
-            onPressed: () async {
-              await context.read<FireStorePersonInfo>().getCollection();
-            },
-            icon: const Icon(Icons.refresh),
-          ),
           Expanded(
             child: PlutoGrid(
               columns: columns,
@@ -76,6 +101,9 @@ class _ViewScreenState extends State<ViewScreen> {
               // columnGroups: columnGroups,
               onLoaded: (PlutoGridOnLoadedEvent event) {
                 stateManager = event.stateManager;
+
+                /// When the grid is finished loading, enable loading.
+                stateManager.setShowLoading(true);
               },
               onChanged: (PlutoGridOnChangedEvent event) {
                 log(event.value);
