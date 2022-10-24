@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart';
+import 'stream_test_screen.dart';
 import 'view_screen.dart';
 
 class ScreenSelector with ChangeNotifier {
@@ -17,6 +18,8 @@ class ScreenSelector with ChangeNotifier {
         return const RegisterScreen();
       case '살펴보기':
         return const ViewScreen();
+      case '테스트하기':
+        return const StreamTestScreen();
       default:
         return const RegisterScreen();
     }

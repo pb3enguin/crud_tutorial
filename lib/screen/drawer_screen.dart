@@ -4,11 +4,18 @@ import 'package:provider/provider.dart';
 
 import 'package:crud_tutorial/constants.dart';
 
+import '../db/firestore_function.dart';
+
 class DrawerScreen extends StatelessWidget {
-  const DrawerScreen({Key? key}) : super(key: key);
+  DrawerScreen({Key? key}) : super(key: key);
+
+  bool _isInit = false;
 
   @override
   Widget build(BuildContext context) {
+    // 테스트하기 메뉴 : firebase 공식 지원인 경우만 (StreamBuilder 이슈)
+    if (isFirestoreSupported == true) {}
+
     return ListView(
       primary: false, // to avoid multiple primary scrolls in one route
       children: <Widget>[

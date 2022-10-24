@@ -54,7 +54,7 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("CRUD Test"),
       ),
-      drawer: const Drawer(
+      drawer: Drawer(
         child: DrawerScreen(),
       ),
       body: context.watch<ScreenSelector>().getScreeen(),
